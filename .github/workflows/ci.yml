@@ -15,16 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Setup pnpm first
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
       # Node 20 LTS + built‑in pnpm cache
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'          # transparent cache ✨
-          cache-dependency-path: pnpm-lock.yaml   # speeds things up dramatically :contentReference[oaicite:0]{index=0}
-
-      - uses: pnpm/action-setup@v4   # grabs the same pnpm version as in packageManager field (if present)
-        with:
-          version: 8 # or your preferred pnpm version
+          cache: 'pnpm'
+          cache-dependency-path: pnpm-lock.yaml
 
       - run: pnpm install --frozen-lockfile
 
