@@ -8,11 +8,11 @@ interface ChatInputProps {
   disabled: boolean;
 }
 
-export const ChatInput: React.FC<ChatInputProps> = ({ 
-  value, 
-  onChange, 
-  onSubmit, 
-  disabled 
+export const ChatInput: React.FC<ChatInputProps> = ({
+  value,
+  onChange,
+  onSubmit,
+  disabled,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -21,7 +21,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     const textarea = textareaRef.current;
     if (!textarea) return;
 
-    textarea.style.height = 'auto';
+    textarea.style.height = "auto";
     const scrollHeight = textarea.scrollHeight;
     const maxHeight = 180;
     const minHeight = 56;
@@ -45,7 +45,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
     }
@@ -55,7 +55,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
     <div className="w-full max-w-3xl mx-auto px-4 py-6 sm:px-6 md:py-8">
       <form
         onSubmit={handleSubmit}
-                className="relative flex items-end gap-3 bg-[#131f24] border border-gray-700 rounded-2xl p-3 shadow-lg"
+        className="relative flex items-end gap-3 bg-[#131f24] border border-gray-700 rounded-2xl p-3 shadow-lg"
       >
         {/* Accessible label hidden visually */}
         <label htmlFor="message" className="sr-only">
@@ -75,12 +75,12 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             autoFocus
             rows={1}
             style={{
-              minHeight: '44px',
-              maxHeight: '180px',
-              overflowY: value.length > 150 ? 'auto' : 'hidden',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              fontSize: '16px',
-              lineHeight: '1.5'
+              minHeight: "44px",
+              maxHeight: "180px",
+              overflowY: value.length > 150 ? "auto" : "hidden",
+              fontFamily: "system-ui, -apple-system, sans-serif",
+              fontSize: "16px",
+              lineHeight: "1.5",
             }}
           />
         </div>

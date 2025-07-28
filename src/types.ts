@@ -1,5 +1,5 @@
-export type Message = { 
-  role: "user" | "assistant" | "system"; 
+export type Message = {
+  role: "user" | "assistant" | "system";
   content: string;
   images?: string[]; // Base64 encoded images
 };

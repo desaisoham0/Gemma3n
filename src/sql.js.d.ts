@@ -1,4 +1,4 @@
-declare module 'sql.js' {
+declare module "sql.js" {
   export interface QueryResult {
     columns: string[];
     values: unknown[][];
@@ -11,7 +11,9 @@ declare module 'sql.js' {
     // Add other methods as needed
   }
 
-  const initSqlJs: (config?: unknown) => Promise<{ Database: { new(...args: unknown[]): Database } }>;
+  const initSqlJs: (
+    config?: unknown,
+  ) => Promise<{ Database: { new (...args: unknown[]): Database } }>;
   export default initSqlJs;
   export { Database, QueryResult };
 }

@@ -1,13 +1,18 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import remarkMath    from "remark-math";
-import rehypeKatex   from "rehype-katex";
-import remarkGfm     from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { Message } from "../types";
 
-const CodeBlock = ({ inline, className, children, ...props }: {
+const CodeBlock = ({
+  inline,
+  className,
+  children,
+  ...props
+}: {
   inline?: boolean;
   className?: string;
   children?: React.ReactNode;
@@ -22,10 +27,13 @@ const CodeBlock = ({ inline, className, children, ...props }: {
       showLineNumbers
       {...props}
     >
-      {String(children ?? '').replace(/\n$/, "")}
+      {String(children ?? "").replace(/\n$/, "")}
     </SyntaxHighlighter>
   ) : (
-    <code className="bg-gray-800 text-emerald-400 px-1.5 py-0.5 rounded text-sm" {...props}>
+    <code
+      className="bg-gray-800 text-emerald-400 px-1.5 py-0.5 rounded text-sm"
+      {...props}
+    >
       {children}
     </code>
   );
@@ -36,15 +44,19 @@ interface ChatWindowProps {
   loading: boolean;
 }
 
-export const ChatWindow: React.FC<ChatWindowProps> = ({ messages, loading }) => (
+export const ChatWindow: React.FC<ChatWindowProps> = ({
+  messages,
+  loading,
+}) => (
   <section className="flex-1 overflow-y-auto w-full max-w-4xl mx-auto px-3 sm:px-6 py-8 space-y-8">
     {messages.map((msg, idx) => (
-      <article 
-        key={idx} 
+      <article
+        key={idx}
         className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
       >
-        <div className={`relative max-w-[85%] ${msg.role === "user" ? "max-w-[75%]" : "max-w-[90%]"}`}>
-          
+        <div
+          className={`relative max-w-[85%] ${msg.role === "user" ? "max-w-[75%]" : "max-w-[90%]"}`}
+        >
           <div
             className={`relative rounded-2xl px-4 py-3 ${
               msg.role === "user"
@@ -52,15 +64,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ messages, loading }) => 
                 : "bg-[#131f24] border border-gray-700 text-gray-200"
             }`}
           >
-
-
             {msg.role === "user" ? (
               // User messages: clean, personal tone
               <div className="text-base leading-7 font-normal">
                 <div className="prose prose-blue prose-invert max-w-none [&>p]:mb-2 [&>p:last-child]:mb-0">
                   <ReactMarkdown
                     components={{
-                      code: CodeBlock
+                      code: CodeBlock,
                     }}
                   >
                     {msg.content}
@@ -70,7 +80,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ messages, loading }) => 
             ) : (
               // AI messages: optimized for reading long-form content
               <div className="prose prose-invert max-w-none text-base leading-relaxed">
-                <div className="[&>h1]:text-lg [&>h1]:font-semibold [&>h1]:mb-3 [&>h1]:text-gray-100
+                <div
+                  className="[&>h1]:text-lg [&>h1]:font-semibold [&>h1]:mb-3 [&>h1]:text-gray-100
                            [&>h2]:text-base [&>h2]:font-medium [&>h2]:mb-3 [&>h2]:text-gray-200
                            [&>h3]:text-sm [&>h3]:font-medium [&>h3]:mb-2 [&>h3]:text-gray-300
                            [&>p]:mb-3 [&>p:last-child]:mb-0 [&>p]:text-gray-200
@@ -79,9 +90,10 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ messages, loading }) => 
                            [&>blockquote]:border-l-2 [&>blockquote]:border-emerald-400 [&>blockquote]:pl-3 [&>blockquote]:text-gray-300
                            [&>pre]:bg-gray-800 [&>pre]:border [&>pre]:border-gray-700 [&>pre]:rounded-lg [&>pre]:p-3 [&>pre]:mb-3
                            [&>code]:bg-gray-800 [&>code]:text-emerald-400 [&>code]:px-1.5 [&>code]:py-0.5 [&>code]:rounded [&>code]:text-sm
-                           [&_strong]:text-gray-100 [&_strong]:font-semibold">
+                           [&_strong]:text-gray-100 [&_strong]:font-semibold"
+                >
                   <ReactMarkdown
-                    remarkPlugins={[remarkGfm, remarkMath]}   // GFM first, math second
+                    remarkPlugins={[remarkGfm, remarkMath]} // GFM first, math second
                     rehypePlugins={[rehypeKatex]}
                     components={{
                       code: CodeBlock,
@@ -95,16 +107,28 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ messages, loading }) => 
                       ),
 
                       thead: (props) => (
-                        <thead className="bg-gray-800 text-gray-100 border-b border-gray-700" {...props} />
+                        <thead
+                          className="bg-gray-800 text-gray-100 border-b border-gray-700"
+                          {...props}
+                        />
                       ),
                       th: (props) => (
-                        <th className="px-3 py-2 font-medium text-left" {...props} />
+                        <th
+                          className="px-3 py-2 font-medium text-left"
+                          {...props}
+                        />
                       ),
                       td: (props) => (
-                        <td className="px-3 py-2 text-gray-200 border-b border-gray-700" {...props} />
+                        <td
+                          className="px-3 py-2 text-gray-200 border-b border-gray-700"
+                          {...props}
+                        />
                       ),
                       tr: ({ ...props }) => (
-                        <tr className="even:bg-gray-800/40 hover:bg-gray-700/30" {...props} />
+                        <tr
+                          className="even:bg-gray-800/40 hover:bg-gray-700/30"
+                          {...props}
+                        />
                       ),
                     }}
                   >
@@ -125,8 +149,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ messages, loading }) => 
             <div className="flex items-center space-x-2">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
+                <div
+                  className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
+                  style={{ animationDelay: "0.4s" }}
+                ></div>
               </div>
               <span className="text-sm text-gray-400">Thinking...</span>
             </div>
