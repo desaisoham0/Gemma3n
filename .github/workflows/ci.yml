@@ -23,6 +23,8 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml   # speeds things up dramatically :contentReference[oaicite:0]{index=0}
 
       - uses: pnpm/action-setup@v4   # grabs the same pnpm version as in packageManager field (if present)
+        with:
+          version: 8 # or your preferred pnpm version
 
       - run: pnpm install --frozen-lockfile
 
