@@ -3,6 +3,10 @@ import type { Database } from "sql.js";
 
 let SQL: Awaited<ReturnType<typeof initSqlJs>> | null = null;
 
+function escapeSqlString(str: string) {
+  return str.replace(/'/g, "''");
+}
+
 // Lazy‑load the SQL.js module and hydrate from localStorage if present
 export async function getDatabase(): Promise<Database> {
   if (!SQL) {
@@ -164,35 +168,30 @@ export function getAllChats(db: Database) {
 }
 
 export function getChatById(db: Database, id: string) {
-  if (!id) {
-    throw new Error("Chat ID is required");
-  }
+  if (!id) throw new Error("Chat ID is required");
 
-  try {
-    const res = db.exec(
-      `SELECT id, title, created_at, updated_at FROM chats WHERE id = ?;`,
-      [id],
-    );
+  const safeId = escapeSqlString(id);
+  const sql = `
+    SELECT id, title, created_at, updated_at
+      FROM chats
+     WHERE id = '${safeId}';
+  `;
+  const res = db.exec(sql);
+  if (!res[0]?.values.length) return null;
 
-    if (!res[0] || res[0].values.length === 0) return null;
+  const { columns, values } = res[0];
+  const row = values[0];
+  const obj: Record<string, unknown> = {};
+  row.forEach((value, i) => {
+    obj[columns[i]] = value;
+  });
 
-    const { columns, values } = res[0];
-    const row = values[0];
-    const obj: Record<string, unknown> = {};
-    row.forEach((value, index) => {
-      obj[columns[index]] = value;
-    });
-
-    return {
-      id: obj.id as string,
-      title: obj.title as string,
-      created_at: obj.created_at as number,
-      updated_at: obj.updated_at as number,
-    };
-  } catch (error) {
-    console.error("Error getting chat by ID:", error);
-    return null;
-  }
+  return {
+    id: obj.id as string,
+    title: obj.title as string,
+    created_at: obj.created_at as number,
+    updated_at: obj.updated_at as number,
+  };
 }
 
 // Message functions
@@ -225,35 +224,29 @@ export function addMessage(
 }
 
 export function getMessages(db: Database, chatId: string) {
-  if (!chatId) {
-    throw new Error("Chat ID is required");
-  }
+  if (!chatId) throw new Error("Chat ID is required");
 
-  try {
-    const res = db.exec(
-      `SELECT id, role, content, ts FROM messages WHERE chat_id = ? ORDER BY ts ASC;`,
-      [chatId],
-    );
+  const safeChatId = escapeSqlString(chatId);
+  const sql = `
+    SELECT id, role, content, ts
+      FROM messages
+     WHERE chat_id = '${safeChatId}'
+  ORDER BY ts ASC;
+  `;
+  const res = db.exec(sql);
+  if (!res[0]?.values.length) return [];
 
-    if (!res[0]) return [];
-
-    const { columns, values } = res[0];
-    return values.map((row: unknown[]) => {
-      const obj: Record<string, unknown> = {};
-      row.forEach((value, index) => {
-        obj[columns[index]] = value;
-      });
-      return {
-        id: obj.id as number,
-        role: obj.role as string,
-        content: obj.content as string,
-        ts: obj.ts as number,
-      };
-    });
-  } catch (error) {
-    console.error("Error getting messages:", error);
-    return [];
-  }
+  const { columns, values } = res[0];
+  return values.map((row) => {
+    const obj: Record<string, unknown> = {};
+    row.forEach((value, i) => (obj[columns[i]] = value));
+    return {
+      id: obj.id as number,
+      role: obj.role as string,
+      content: obj.content as string,
+      ts: obj.ts as number,
+    };
+  });
 }
 
 export function deleteChat(db: Database, chatId: string) {
