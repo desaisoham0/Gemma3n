@@ -1,7 +1,7 @@
 # Gemma 3n Chat – talk to an LLM right in your browser
 
-A lightweight chat app that runs Google’s **Gemma 3n** model locally via Ollama.  
-No internet, No cloud calls, no accounts, and every conversation lives in your own browser thanks to _sql.js_ + _localStorage_.
+A lightweight chat app that runs Google’s **Gemma 3n** model (or any other supported model) locally via Ollama.  
+No internet. No accounts. No one snooping on your data. Every conversation stays local, stored safely in your browser with `sql.js` and `localStorage`.
 
 ---
 
