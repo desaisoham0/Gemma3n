@@ -1,0 +1,35 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node 20 LTS + built‑in pnpm cache
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'          # transparent cache ✨
+          cache-dependency-path: pnpm-lock.yaml   # speeds things up dramatically :contentReference[oaicite:0]{index=0}
+
+      - uses: pnpm/action-setup@v4   # grabs the same pnpm version as in packageManager field (if present)
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Lint & type‑check
+        run: |
+          pnpm run lint
+          pnpm exec tsc --noEmit
+
+      - name: Build (tree‑shakes vite)
+        run: pnpm run build

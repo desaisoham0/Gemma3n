@@ -1,0 +1,16 @@
+name: Format
+on: [pull_request]
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile --silent
+      - name: Check Prettier
+        run: pnpm exec prettier --check .
