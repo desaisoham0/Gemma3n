@@ -7,10 +7,11 @@ No internet, No cloud calls, no accounts, and every conversation lives in your o
 
 ## Features
 
-- **Offline / private** – Gemma 3n served by [Ollama](https://ollama.com/).
-- **Clean React UI** – Tailwind‑styled chat with markdown, code, and math (KaTeX).
-- **Multiple conversations** – Sidebar to switch chats; titles generated on first message.
-- **Local history** – SQLite (via `sql.js`) stored in `localStorage`.
+- **Offline / private** – Powered by [Ollama](https://ollama.com/) and your hardware.
+- **Pick your model** – Easily swap in any LLM supported by Ollama.
+- **Clean React UI** – Tailwind‑styled chat with markdown, code, and math (via KaTeX).
+- **Multiple conversations** – Sidebar to jump between conversations. Titles auto-generate on the fly.
+- **Local history** – Everything's saved using SQLite (`sql.js`) and `localStorage`.
 
 ---
 
@@ -21,7 +22,7 @@ No internet, No cloud calls, no accounts, and every conversation lives in your o
 | Framework | Vite + React + TypeScript     |
 | Styling   | Tailwind CSS, Heroicons       |
 | DB        | sql.js (SQLite → WebAssembly) |
-| LLM       | Ollama running `gemma3n:e4b`  |
+| LLM       | Ollama (any supported model)  |
 
 ---
 
@@ -39,4 +40,39 @@ pnpm add uuid
 
 # dev server
 pnpm dev                  # http://localhost:5173
+```
+
+## Changing model
+
+```ts
+// src/utils/api.ts
+
+import type { Message } from "../types";
+
+const OLLAMA_URL = "http://localhost:11434/api/chat"; // <--- Change this line with your server
+const MODEL = "gemma3n:e4b"; // <---- Change this line with your model
+
+export async function fetchOllamaResponse(
+  messages: Message[],
+): Promise<string> {
+  const response = await fetch(OLLAMA_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: MODEL,
+      messages: messages.map((m) => ({
+        role: m.role,
+        content: m.content,
+      })),
+      stream: false,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.message.content;
+}
 ```
