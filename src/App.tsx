@@ -221,12 +221,9 @@ function App() {
               <p className="text-sm text-gray-500 px-2 py-2">No chats yet</p>
             ) : (
               chats.map((chat) => (
-                <div
-                  key={chat.id}
-                  className="flex items-center space-x-0 group"
-                >
+                <div key={chat.id} className="flex items-center group">
                   <button
-                    className={`flex-1 text-left px-3 py-2 rounded-lg text-sm cursor-pointer transition-colors duration-200 hover:bg-gray-700 ${
+                    className={`flex-1 text-left py-2 px-2 rounded-lg text-sm cursor-pointer transition-colors duration-200 hover:bg-gray-700 ${
                       chat.id === currentChatId
                         ? "bg-blue-600 text-white"
                         : "bg-gray-800 text-gray-200"
@@ -237,22 +234,20 @@ function App() {
                       <span className="truncate">
                         {chat.title || `Chat ${chat.id.slice(0, 8)}`}
                       </span>
-                      <button
-                        className="absolute right-0 pt-3 px-0 py-1 text-xs text-red-400 hover:text-red-600 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteChat(chat.id);
-                        }}
-                        title="Delete chat"
-                        disabled={loading}
-                        tabIndex={-1}
-                      >
-                        <TrashIcon className="h-5 w-5" />
-                      </button>
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                       {new Date(chat.updated_at).toLocaleDateString()}
                     </div>
+                  </button>
+                  {/* Move delete button outside */}
+                  <button
+                    className="absolute right-2 px-2 py-1 text-xs text-red-400 hover:text-red-600 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                    onClick={() => handleDeleteChat(chat.id)}
+                    title="Delete chat"
+                    disabled={loading}
+                    tabIndex={-1}
+                  >
+                    <TrashIcon className="h-5 w-5" />
                   </button>
                 </div>
               ))
