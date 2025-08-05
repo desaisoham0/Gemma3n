@@ -55,7 +55,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
       >
         <div
-          className={`relative max-w-[85%] ${msg.role === "user" ? "max-w-[75%]" : "max-w-[90%]"}`}
+          className={`relative max-w-[85%] ${msg.role === "user" ? "max-w-[75%]" : "max-w-[100%]"}`}
         >
           <div
             className={`relative rounded-2xl px-4 py-3 ${

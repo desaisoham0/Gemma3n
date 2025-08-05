@@ -1,11 +1,15 @@
 import React, { useRef, useEffect } from "react";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { AiModeSelector } from "./AiModeSelector";
+import type { AiMode } from "../config/aiModes";
 
 interface ChatInputProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onSubmit: (e: React.FormEvent) => void;
   disabled: boolean;
+  selectedMode: AiMode;
+  onModeChange: (mode: AiMode) => void;
 }
 
 export const ChatInput: React.FC<ChatInputProps> = ({
@@ -13,6 +17,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   onChange,
   onSubmit,
   disabled,
+  selectedMode,
+  onModeChange,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -53,6 +59,15 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
   return (
     <div className="w-full max-w-3xl mx-auto px-4 py-6 sm:px-6 md:py-8">
+      {/* AI Mode Selector */}
+      <div className="mb-3 flex justify-start">
+        <AiModeSelector
+          selectedMode={selectedMode}
+          onModeChange={onModeChange}
+          disabled={disabled}
+        />
+      </div>
+
       <form
         onSubmit={handleSubmit}
         className="relative flex items-end gap-3 bg-[#131f24] border border-gray-700 rounded-2xl p-3 shadow-lg"
@@ -67,7 +82,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             ref={textareaRef}
             id="message"
             className="w-full bg-transparent placeholder-gray-400 text-gray-200 text-base font-normal px-3 py-2 focus:outline-none resize-none leading-relaxed font-sans"
-            placeholder="Ask me anything..."
+            placeholder={`Ask your ${selectedMode.name.toLowerCase()}...`}
             value={value}
             onChange={handleChange}
             onKeyDown={handleKeyDown}

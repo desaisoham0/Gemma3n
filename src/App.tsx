@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { ChatWindow } from "./components/ChatWindow";
 import { ChatInput } from "./components/ChatInput";
+import { AI_MODES, type AiMode } from "./config/aiModes";
 import { fetchOllamaResponse } from "./utils/api";
 import type { Message } from "./types";
 import {
@@ -9,7 +10,6 @@ import {
   PencilSquareIcon,
   TrashIcon,
 } from "@heroicons/react/24/solid";
-import { systemPrompt } from "./systemPrompt";
 import { useChatDb } from "./hooks/useChatDb";
 import { v4 as uuidv4 } from "uuid";
 
@@ -27,6 +27,8 @@ function App() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [selectedMode, setSelectedMode] = useState<AiMode>(AI_MODES[0]); // Default to Study Coach
+
   const {
     createNewChat,
     addMessageToChat,
@@ -62,6 +64,8 @@ function App() {
     setCurrentChatId(newChatId);
     setCurrentChatMessages([]);
     setSidebarOpen(false);
+    // Reset to default mode when starting new chat
+    setSelectedMode(AI_MODES[0]);
     // Don't create the chat in DB yet - wait for first message
   }, []);
 
@@ -87,6 +91,11 @@ function App() {
     [deleteChatById, getAllChatsList, currentChatId],
   );
 
+  // Handle AI mode change
+  const handleModeChange = useCallback((mode: AiMode) => {
+    setSelectedMode(mode);
+  }, []);
+
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim() || loading) return;
@@ -101,7 +110,7 @@ function App() {
     if (!chatId || !chats.find((c) => c.id === chatId)) {
       chatId = uuidv4();
 
-      // Create chat title from first message (truncated to 50 chars)
+      // Create chat title from first message (truncated to 25 chars)
       const chatTitle =
         userMessage.length > 25
           ? userMessage.substring(0, 25) + "..."
@@ -123,7 +132,13 @@ function App() {
 
     // Add user message to database and update state
     addMessageToChat(chatId, userMsg.role, userMsg.content);
-    const updatedMessages = [systemPrompt, ...currentChatMessages, userMsg];
+
+    // Use selected AI mode's system prompt instead of hardcoded studyPrompt
+    const updatedMessages = [
+      selectedMode.systemPrompt,
+      ...currentChatMessages,
+      userMsg,
+    ];
     setCurrentChatMessages(updatedMessages);
 
     try {
@@ -203,7 +218,7 @@ function App() {
         </div>
 
         {/* Sidebar Content */}
-        <div className="p-4 space-y-3">
+        <div className="p-4 space-y-3 flex flex-col h-[calc(100vh-64px)]">
           <button
             className="w-full px-3 py-2.5 bg-blue-600 hover:bg-blue-700 rounded-lg cursor-pointer text-sm font-medium transition-colors duration-200 disabled:opacity-50"
             onClick={handleNewChat}
@@ -213,7 +228,7 @@ function App() {
           </button>
 
           {/* List of chats */}
-          <div className="mt-4 space-y-2">
+          <div className="mt-4 flex-1 overflow-y-auto space-y-2">
             <h3 className="text-xs font-medium text-gray-400 uppercase tracking-wide px-2">
               Chat History
             </h3>
@@ -221,7 +236,7 @@ function App() {
               <p className="text-sm text-gray-500 px-2 py-2">No chats yet</p>
             ) : (
               chats.map((chat) => (
-                <div key={chat.id} className="flex items-center group">
+                <div key={chat.id} className="flex items-center group relative">
                   <button
                     className={`flex-1 text-left py-2 px-2 rounded-lg text-sm cursor-pointer transition-colors duration-200 hover:bg-gray-700 ${
                       chat.id === currentChatId
@@ -239,7 +254,7 @@ function App() {
                       {new Date(chat.updated_at).toLocaleDateString()}
                     </div>
                   </button>
-                  {/* Move delete button outside */}
+                  {/* Delete button */}
                   <button
                     className="absolute right-2 px-2 py-1 text-xs text-red-400 hover:text-red-600 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-150"
                     onClick={() => handleDeleteChat(chat.id)}
@@ -247,7 +262,7 @@ function App() {
                     disabled={loading}
                     tabIndex={-1}
                   >
-                    <TrashIcon className="h-5 w-5" />
+                    <TrashIcon className="h-4 w-4" />
                   </button>
                 </div>
               ))
@@ -268,7 +283,7 @@ function App() {
       {/* Main Content */}
       {currentChatMessages.length > 0 ? (
         <>
-          <div className="flex-1 overflow-y-auto w-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 pt-8 pb-64">
+          <div className="flex-1 overflow-y-auto w-full px-4 sm:px-8 md:px-12 lg:px-20 xl:px-32 pt-8 pb-72">
             <div className="w-full max-w-6xl mx-auto">
               <ChatWindow
                 messages={currentChatMessages.filter(
@@ -284,6 +299,8 @@ function App() {
               onChange={(e) => setInput(e.target.value)}
               onSubmit={sendMessage}
               disabled={loading}
+              selectedMode={selectedMode}
+              onModeChange={handleModeChange}
             />
           </div>
         </>
@@ -310,7 +327,7 @@ function App() {
                 Welcome to Chat
               </h1>
               <p className="text-sm text-gray-400">
-                Start a conversation by typing a message below
+                Choose an AI mode and start a conversation below
               </p>
             </div>
             <div className="w-full">
@@ -319,6 +336,8 @@ function App() {
                 onChange={(e) => setInput(e.target.value)}
                 onSubmit={sendMessage}
                 disabled={loading}
+                selectedMode={selectedMode}
+                onModeChange={handleModeChange}
               />
             </div>
           </div>
