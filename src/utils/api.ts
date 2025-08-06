@@ -1,7 +1,6 @@
 import type { Message } from "../types";
 
-// const OLLAMA_URL = "http://localhost:11434/api/chat"; // Uncomment this line for local development
-const OLLAMA_URL = import.meta.env.VITE_OLLAMA_URL; // Use the environment variable for the Ollama URL
+const OLLAMA_URL = "http://localhost:11434/api/chat";
 const MODEL = "gemma3n:e4b";
 
 export async function fetchOllamaResponse(
