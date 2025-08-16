@@ -22,15 +22,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Auto-resize textarea function
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (!textarea) return;
-
     textarea.style.height = "auto";
     const scrollHeight = textarea.scrollHeight;
-    const maxHeight = 180;
-    const minHeight = 56;
+    const maxHeight = 192;
+    const minHeight = 44;
     const newHeight = Math.min(Math.max(scrollHeight, minHeight), maxHeight);
     textarea.style.height = `${newHeight}px`;
   };
@@ -58,9 +56,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-6 sm:px-6 md:py-8">
-      {/* AI Mode Selector */}
-      <div className="mb-3 flex justify-start">
+    <section className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 md:py-8">
+      <div className="mb-3 flex items-center justify-start">
         <AiModeSelector
           selectedMode={selectedMode}
           onModeChange={onModeChange}
@@ -70,18 +67,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({
 
       <form
         onSubmit={handleSubmit}
-        className="relative flex items-end gap-3 bg-[#131f24] border border-gray-700 rounded-2xl p-3 shadow-lg"
+        className="relative flex items-end gap-3 rounded-2xl border border-gray-700 bg-[#131f24] p-3 shadow-sm"
+        aria-label="Chat input form"
       >
-        {/* Accessible label hidden visually */}
         <label htmlFor="message" className="sr-only">
           Type your message
         </label>
 
-        <div className="flex-1 relative">
+        <div className="relative flex-1">
           <textarea
             ref={textareaRef}
             id="message"
-            className="w-full bg-transparent placeholder-gray-400 text-gray-200 text-base font-normal px-3 py-2 focus:outline-none resize-none leading-relaxed font-sans"
+            className="w-full resize-none bg-transparent px-3 py-2 font-sans text-base font-normal leading-relaxed text-gray-200 placeholder-gray-400 focus:outline-none"
             placeholder={`Ask your ${selectedMode.name.toLowerCase()}...`}
             value={value}
             onChange={handleChange}
@@ -89,26 +86,23 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             disabled={disabled}
             autoFocus
             rows={1}
-            style={{
-              minHeight: "44px",
-              maxHeight: "180px",
-              overflowY: value.length > 150 ? "auto" : "hidden",
-              fontFamily: "system-ui, -apple-system, sans-serif",
-              fontSize: "16px",
-              lineHeight: "1.5",
-            }}
+            aria-describedby="message-help"
           />
+          <p id="message-help" className="mt-1 text-xs text-gray-400">
+            Press Enter to send, Shift + Enter for a new line
+          </p>
         </div>
 
         <button
           type="submit"
           disabled={disabled || !value.trim()}
-          className="flex-shrink-0 flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:hover:bg-blue-600 transition-colors duration-200 cursor-pointer"
+          className="cursor-pointer flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-sm transition-colors duration-200 hover:bg-blue-700 active:bg-blue-700/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
           title={disabled ? "Please wait..." : "Send message (Enter)"}
+          aria-label="Send message"
         >
-          <PaperAirplaneIcon className="w-5 h-5 text-white" />
+          <PaperAirplaneIcon className="h-5 w-5" />
         </button>
       </form>
-    </div>
+    </section>
   );
 };

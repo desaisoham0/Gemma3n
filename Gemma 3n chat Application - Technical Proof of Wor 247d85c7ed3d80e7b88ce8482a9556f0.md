@@ -161,6 +161,7 @@ Each mode includes specific behavioral instructions, formatting guidelines, and 
 
 - **Problem**: Need for persistent conversation storage without server infrastructure.
 - **Solution**: Implemented SQLite in the browser using sql.js WebAssembly:
+
   ```tsx
   export async function getDatabase(): Promise<Database> {
     if (!SQL) {
@@ -177,6 +178,7 @@ Each mode includes specific behavioral instructions, formatting guidelines, and 
     return new SQL.Database();
   }
   ```
+
 - **Technical Justification**: This approach provides full SQL capabilities in the browser while maintaining offline functionality and data persistence through localStorage serialization.
 
 ### Challenge 2: Memory Management and Performance

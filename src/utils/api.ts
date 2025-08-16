@@ -1,7 +1,7 @@
 import type { Message } from "../types";
 
 const OLLAMA_URL = "http://localhost:11434/api/chat";
-const MODEL = "gemma3n:e4b";
+const MODEL = "gemma3:4b";
 
 export async function fetchOllamaResponse(
   messages: Message[],

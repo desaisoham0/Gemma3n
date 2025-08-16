@@ -48,24 +48,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   messages,
   loading,
 }) => (
-  <section className="flex-1 overflow-y-auto w-full max-w-4xl mx-auto px-3 sm:px-6 py-8 space-y-8">
+  <section className="flex-1 w-full max-w-4xl mx-auto px-3 sm:px-6 py-8 space-y-6 sm:space-y-8">
     {messages.map((msg, idx) => (
       <article
         key={idx}
         className={`flex w-full ${msg.role === "user" ? "justify-end" : "justify-start"}`}
       >
         <div
-          className={`relative max-w-[85%] ${msg.role === "user" ? "max-w-[75%]" : "max-w-[100%]"}`}
+          className={`relative ${msg.role === "user" ? "max-w-[75%]" : "max-w-full"}`}
         >
           <div
             className={`relative rounded-2xl px-4 py-3 ${
               msg.role === "user"
-                ? "bg-blue-500/15 border border-blue-500/20 text-gray-100"
-                : "bg-[#131f24] border border-gray-700 text-gray-200"
+                ? "border border-blue-500/20 bg-blue-500/15 text-gray-100 shadow-sm"
+                : "border border-gray-700 bg-[#131f24] text-gray-200 shadow-sm"
             }`}
           >
             {msg.role === "user" ? (
-              // User messages: clean, personal tone
               <div className="text-base leading-7 font-normal">
                 <div className="prose prose-blue prose-invert max-w-none [&>p]:mb-2 [&>p:last-child]:mb-0">
                   <ReactMarkdown
@@ -78,7 +77,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 </div>
               </div>
             ) : (
-              // AI messages: optimized for reading long-form content
               <div className="prose prose-invert max-w-none text-base leading-relaxed">
                 <div
                   className="[&>h1]:text-lg [&>h1]:font-semibold [&>h1]:mb-3 [&>h1]:text-gray-100
@@ -145,18 +143,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     {loading && (
       <div className="flex justify-start w-full">
         <div className="relative max-w-[90%]">
-          <div className="bg-[#131f24] border border-gray-700 rounded-2xl px-4 py-3">
+          <div className="rounded-2xl border border-gray-700 bg-[#131f24] px-4 py-3 shadow-sm">
             <div className="flex items-center space-x-2">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                <div
-                  className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                  style={{ animationDelay: "0.2s" }}
-                ></div>
-                <div
-                  className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"
-                  style={{ animationDelay: "0.4s" }}
-                ></div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse [animation-delay:200ms]"></div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse [animation-delay:400ms]"></div>
               </div>
               <span className="text-sm text-gray-400">Thinking...</span>
             </div>
